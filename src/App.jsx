@@ -13,9 +13,15 @@ const App = () => {
 
   const [inputval,setinputval] = useState("ryan");
 
+  const [search,setSearch] = useState('');
+
   if (isLoading) return <p>isLoading</p>
 
   if (isError)  return <p>error</p>
+
+  const filtered = data.filter((product) => 
+    product.name.toLowerCase().includes(search.toLowerCase())
+);
 
   onchange =(event)=>{
     const newval=event.target.value;
@@ -26,9 +32,16 @@ const App = () => {
   return (
     <div className="App">
       <input placeholder='enter the value' onChange={onchange}/>
+      <input
+  type="text"
+  placeholder="Search by name"
+  value={search}
+  onChange={(e) => setSearch(e.target.value)}
+  style={{ padding: '10px', marginBottom: '20px', fontSize: '16px' }}
+/>
       <h1>{inputval}</h1>
        <div className="product-grid" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-        {data.map((product,index)=>(
+        {filtered.map((product,index)=>(
           <Productcard
           key={index}
           name={product.name}
