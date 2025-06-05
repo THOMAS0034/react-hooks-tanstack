@@ -5,21 +5,23 @@ import React from 'react';
 import axios from 'axios'
 import { Productcard } from './components/Productcard';
 import { useProductData } from './useproductdata';
-
+import { usePagination } from './usePagination';
 
 const App = () => {
-
-  const {data,isLoading,isError} = useProductData();
 
   const [inputval,setinputval] = useState("ryan");
 
   const [search,setSearch] = useState('');
 
+  const [page,setPage] = useState(1);
+
+  const { data ,isLoading, isError }=usePagination(page);
+
   if (isLoading) return <p>isLoading</p>
 
   if (isError)  return <p>error</p>
 
-  const filtered = data.filter((product) => 
+  const filtered = data?.filter((product) => 
     product.name.toLowerCase().includes(search.toLowerCase())
 );
 
@@ -41,7 +43,7 @@ const App = () => {
 />
       <h1>{inputval}</h1>
        <div className="product-grid" style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-        {filtered.map((product,index)=>(
+        {filtered?.map((product,index)=>(
           <Productcard
           key={index}
           name={product.name}
@@ -51,6 +53,20 @@ const App = () => {
       />
       ))}
        </div>
+        <div style={{ marginTop: '20px' }}>
+        <button onClick={() => setPage((prev) => Math.max(prev - 1, 1))} disabled={page === 1}>
+          Previous
+        </button>
+
+        <span style={{ margin: '0 10px' }}>Page {page}</span>
+
+        <button
+          onClick={() => setPage((prev) => prev + 1)}
+          disabled={data.length < 10} 
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 }
